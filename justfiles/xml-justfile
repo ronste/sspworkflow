@@ -32,10 +32,10 @@ xml- xml-mode=xml-mode: _default
   echo "Elapsed Time: $SECONDS seconds"
 
 # Convert docx to XML using Pandoc + Saxon HE 12.
-xml: (pandoc- xml-mode) (xml- xml-mode)
+xml: (pandoc- xml-mode metadata-filter) (xml- xml-mode)
 
 # Convert docx to Bits XML (experimental, metadata not yet supported).
-bitsxml: (pandoc- "bits") (xml- "jats") (xml- "bits")
+bitsxml: (pandoc- "bits" metadata-filter) (xml- "jats") (xml- "bits")
 
 [private]
 bitsxml-: (xml- "bits")

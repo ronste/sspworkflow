@@ -12,28 +12,28 @@ _pandoc-help:
   EOF
   
 # Convert docx to Jats XML using Pandoc and custom Lua filter.
-pandoc: (pandoc- xml-mode "on")
-
-# Convert docx to Jats XML using Pandoc without custom Lua filter.
-pandoc-no-lua: (pandoc- xml-mode "off")
+pandoc: (pandoc- xml-mode metadata-filter)
 
 # Convert docx to Bits XML using Pandoc (experimental, metadata not yet supported).
-pandoc-bits: (pandoc- "bits")
+pandoc-bits: (pandoc- "bits" metadata-filter)
 
 [no-cd, private]
-pandoc- xml-mode=xml-mode lua-mode="on": _default
+pandoc- xml-mode=xml-mode metadata-filter=metadata-filter: _default
   #!/usr/bin/env bash
   set -euo pipefail
   source ~/.bashrc
   echo -e "{{hcs}}Converting docx to XML with Pandoc ...{{nc}}"
   echo -e 'Using template file {{ if xml-mode == "bits" { "bits_template.tex" } else { "jats_template.tex" } }}'
+  echo -e "Using metadata filter {{ metadata-filter }}"
   pandoc {{ if debug == "true" { "--verbose" } else { "" } }} "$WORK_PATH/{{docx-file}}" -s \
     -f docx+styles+citations \
     --extract-media="." \
     --metadata-file="$METADATA_PATH/metadata.yaml" \
     --citeproc \
     --template $UTILS_PATH/{{ if xml-mode == "bits" { "bits_template.tex" } else { "jats_template.tex" } }} \
-    {{ if lua-mode=="on" { "-t $UTILS_PATH/custom_jats_writer.lua" } else { "-t jats" } }} \
+    {{ if metadata-filter == "yaml" { "--lua-filter=$UTILS_PATH/metadata-yaml.lua" } else {""} }} \
+    {{ if metadata-filter == "table" { "--lua-filter=$UTILS_PATH/metadata-table.lua" } else {""} }} \
+    {{ if metadata-filter == "custom" { "-t $UTILS_PATH/custom_jats_writer.lua" } else { "" } }} \
     -o "$WORK_PATH/{{docx-file}}_Pandoc.xml" \
     --wrap preserve
   cp {{ if debug == "true" { "--verbose" } else { "" } }} "$WORK_PATH/{{docx-file}}_Pandoc.xml" "$WORK_PATH/{{buffer-xml-file}}"

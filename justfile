@@ -27,9 +27,11 @@ alias weasy := weasyprint
 
 # command line parameters
 theme := 'default'
-docx-file := '$(basename "$(find $WORK_PATH -type f -name "*.docx" | head -n 1)")'
+#docx-file := '$(find $WORK_PATH -maxdepth 1 -type f -name "*.docx" | head -n 1 | xargs basename)'
+docx-file := '$(ls $WORK_PATH/*.docx | head -n 1 | xargs basename)'
 xml-file := 'buffer.xml'
 xml-mode := 'jats'
+metadata-filter := 'none'
 buffer-xml-file := 'buffer.xml'
 html-file := 'buffer.html'
 buffer-html-file := 'buffer.html'
