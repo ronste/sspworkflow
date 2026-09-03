@@ -12,14 +12,14 @@ This repo is intended as a proof-of-concept tool. In particular the templates re
 
 The tools included are [updated 04.03.2026]:
 
-- [Pandoc](https://pandoc.org/) 3.9
+- [Pandoc](https://pandoc.org/) 3.11
 - [luarocks](https://luarocks.org/) 3.13.0
-- [Saxon HE 12.9J](https://www.saxonica.com/documentation12/documentation.xml)
+- [Saxon HE 12.10J](https://www.saxonica.com/documentation12/documentation.xml)
 - [mathjax-full](https://www.mathjax.org/) 4.0.0
 - [Pagedjs](https://pagedjs.org/) and [pagedjs-cli](https://github.com/pubpub/pagedjs-cli) 0.4.3 (with puppeteer 22.4.1)
-- [WeasyPrint](https://weasyprint.org/) version 68.1
+- [WeasyPrint](https://weasyprint.org/) version 69.0
 - [docxToJats](https://github.com/Vitaliy-1/docxToJats)
-- [just](https://github.com/casey/just) 1.46.0 (for task execution)
+- [just](https://github.com/casey/just) 1.58.0 (for task execution)
 
 Template files and other sources (e.g. css) are dereived from:
 

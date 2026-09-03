@@ -31,7 +31,7 @@ theme := 'default'
 docx-file := '$(ls $WORK_PATH/*.docx | head -n 1 | xargs basename)'
 xml-file := 'buffer.xml'
 xml-mode := 'jats'
-metadata-filter := 'none'
+metadata-filter := 'custom'
 buffer-xml-file := 'buffer.xml'
 html-file := 'buffer.html'
 buffer-html-file := 'buffer.html'
@@ -86,16 +86,39 @@ pdf: _default html (pandoc-pdf- pandoc_from) pagedjs- mathjax weasyprint-
 [no-cd]
 reset-jats-example: (reset-example "jats")
 
+# Clean up the working directory and reset Jats XML example file with YAML metadata header
+[no-cd]
+reset-jats-example-yaml: (reset-example "jats" "yaml")
+
+# Clean up the working directory and reset Jats XML example file with table metadata header
+[no-cd]
+reset-jats-example-table: (reset-example "jats" "table")
+
 # Clean up the working directory and reset Bits XML example file 
 [no-cd]
 reset-bits-example: (reset-example "bits")
 
+# Clean up the working directory and reset Bits XML example file with YAML metadata header
+[no-cd]
+reset-bits-example-yaml: (reset-example "bits" "yaml")
+
+# Clean up the working directory and reset Bits XML example file with table metadata header
+[no-cd]
+reset-bits-example-table: (reset-example "bits" "table")
+
 [no-cd, private]
-reset-example xml-mode=xml-mode: cleanup-work && _default 
+reset-example xml-mode=xml-mode metadata-filter=metadata-filter: cleanup-work && _default 
   #!/usr/bin/env bash
   set -euo pipefail
   source ~/.bashrc
-  cp $UTILS_PATH/Dummy_{{ if xml-mode == 'jats' { "Article" } else { "Book" } }}_Template.docx $WORK_PATH/Dummy_{{ if xml-mode == 'jats' { "Article" } else { "Book" } }}_Template.docx
+  bitscustom='Dummy_Book_Template.docx'
+  bitsyaml='Dummy_Book_Template_Yaml_Header.docx'
+  bitstable='Dummy_Book_Template_Table_Header.docx'
+  jatscustom='Dummy_Article_Template.docx'
+  jatsyaml='Dummy_Article_Template_Yaml_Header.docx'
+  jatstable='Dummy_Article_Template_Table_Header.docx'
+  echo -e $UTILS_PATH/${{xml-mode}}{{metadata-filter}}
+  cp $UTILS_PATH/${{xml-mode}}{{metadata-filter}} $WORK_PATH/${{xml-mode}}{{metadata-filter}}
   cp $THEME_PATH/default/templates/metadata.yaml $METADATA_PATH/metadata.yaml
 
 #Run different test scripts

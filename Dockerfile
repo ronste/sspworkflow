@@ -2,8 +2,8 @@ FROM debian:stable-slim
 
 LABEL maintainer="Ronald Steffen, FU Berlin <r.steffen@fu-berlin.de>"
 
-ENV PANDOC_VERSION=3.9
-ENV SAXON_VERSION=HE12-9
+ENV PANDOC_VERSION=3.11
+ENV SAXON_VERSION=HE12-10
 ENV LUA_VERSION=5.4
 ENV LUAROCKS_VERSION=3.13.0
 ENV PATH="/root/.venv/bin:${PATH}"
@@ -107,9 +107,10 @@ RUN set -xe && cd root \
     && unzip -d Saxon${SAXON_VERSION}J Saxon${SAXON_VERSION}J.zip \
     && rm Saxon${SAXON_VERSION}J.zip \
     # Setup npm and install global packages
-    && npm install -g npm@latest \
+    && node -v \
+    && npm install -g npm@10.8.1 \
     && npm install -g \
-       html-validate \
+       html-validate@9.2.0 \
        just-install \
         #    puppeteer \ # used by pagedjs
         #    pagedjs-cli@latest # still outdated -> find alternative

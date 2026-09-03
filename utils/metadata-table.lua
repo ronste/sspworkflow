@@ -16,8 +16,9 @@ local function split (input, sep)
   return fragments
 end
 
-
-local metadata = {}
+local function trim (str)
+  return str:gsub('^%s+', ''):gsub('%s+$', '')
+end
 
 local function table_to_map (tbl)
   local rows = tbl.bodies[1].body
@@ -40,17 +41,17 @@ local metavalue_transformations = setmetatable(
       for i, line in ipairs(x) do
         local fields = split(stringify(line), ';')
         authors:insert {
-          lastname = fields[1],
-          firstname = fields[2],
-          affiliation = fields[3],
-          orcid = fields[4],
-          email = fields[5],
+          ['surname'] = trim(fields[1]),
+          ['given-names'] = trim(fields[2]),
+          ['affiliation'] = trim(fields[3]),
+          ['orcid'] = trim(fields[4]),
+          ['email'] = trim(fields[5]),
         }
       end
       return authors
     end,
     keywords = function (x)
-      return split(stringify(x), ';')
+      return split(stringify(x), ';'):map(trim)
     end,
   },
   {
@@ -77,8 +78,8 @@ local function structure_metadata (meta)
   for key, value in pairs(meta) do
     if key:sub(1,8) == 'Abstract' then
       set_value('abstract', value, key:match('Abstract(..)$'))
-    elseif key:sub(1,8) == 'Keywords' then
-      set_value('keywords', value, key:match('Keywords(..)$'))
+    elseif key:sub(1,8) == 'Keywords' or key == 'Tags' then
+      set_value('tags', value, key:match('Keywords(..)$'))
     else
       set_value(key:lower(), value, nil)
     end
