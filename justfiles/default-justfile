@@ -18,4 +18,11 @@ _default:
   echo "Theme path is:        $THEME_PATH/{{theme}}"
   echo "Utils path is:        $UTILS_PATH"
   echo "Input file is:        {{docx-file}}"
-  cp $TEMPLATE_PATH/metadata.yaml $METADATA_PATH/metadata.yaml
+  if [ ! -d "$METADATA_PATH" ]; then
+    mkdir -p $METADATA_PATH
+  fi
+  if {{ if theme  == "default" {"true"} else {"false"} }} && [ ! -f "$METADATA_PATH/metadata.yaml" ]; then
+    cp $TEMPLATE_PATH/metadata.yaml $METADATA_PATH/metadata.yaml
+  else
+    cp $THEME_PATH/{{theme}}/templates/metadata.yaml $METADATA_PATH/metadata.yaml
+  fi

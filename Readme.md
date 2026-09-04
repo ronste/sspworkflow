@@ -230,6 +230,7 @@ For handling Mathjax fonts see [here](https://docs.mathjax.org/en/v4.0/output/fo
 - Implementation of a web app to provide a REST-API to handle [Dar packages](https://github.com/substance/dar)
 - considering pagedjs polyfill vs pagedjs-cli
 - revise handling of resource files between themes
+- pull lua filters from https://codeberg.org/pandoc/metadata-table/src/branch/main/metadata-table.lua
 
 ## Known issues
 

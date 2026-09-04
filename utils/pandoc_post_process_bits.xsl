@@ -27,7 +27,8 @@
     <xsl:template match="//front-matter">
         <xsl:message>Processing front-matter ...</xsl:message>
         <xsl:copy>
-            <xsl:apply-templates select="//sec[some $toc in $toc-id-candidates satisfies @id = $toc]" />
+            <!-- <xsl:apply-templates select="//sec[some $toc in $toc-id-candidates satisfies @id = $toc]" /> -->
+            <xsl:apply-templates select="node()" />
         </xsl:copy>
     </xsl:template>
 

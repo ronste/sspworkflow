@@ -1,6 +1,5 @@
 # run all conversions (default)
 all: _default pdf
-
 set dotenv-load := true
 set allow-duplicate-recipes := true
 

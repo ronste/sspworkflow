@@ -1,9 +1,6 @@
 local List      = pandoc.List
 local stringify = pandoc.utils.stringify
-
-local metakey = {
-  ['lang'] = 'Lang',
-}
+local ptype     = pandoc.utils.type
 
 local function split (input, sep)
   if sep == nil then
@@ -17,7 +14,7 @@ local function split (input, sep)
 end
 
 local function trim (str)
-  return str:gsub('^%s+', ''):gsub('%s+$', '')
+  return type(str) == 'string' and str:gsub('^%s+', ''):gsub('%s+$', '') or str
 end
 
 local function table_to_map (tbl)
@@ -26,7 +23,21 @@ local function table_to_map (tbl)
   for _, row in ipairs(rows) do
     local key = stringify(row.cells[1])
     local value = row.cells[2].content
-    map[key] = value
+    if key == '' then -- ignore rows without keys
+      goto continue
+    elseif map[key] then
+      if ptype(map[key]) == List then
+        map[key]:insert(value)
+      else
+        map[key] = List{
+          map[key],
+          value,
+        }
+      end
+    else
+      map[key] = value
+    end
+    ::continue::
   end
   return map
 end
@@ -56,13 +67,18 @@ local metavalue_transformations = setmetatable(
   },
   {
     __index = function (t, k)
-      return pandoc.utils.blocks_to_inlines
+      return function (x)
+        if ptype(x) == 'List' then
+          return x
+        else
+          return pandoc.utils.blocks_to_inlines(x)
+        end
+      end
     end
   }
 )
 
 local function structure_metadata (meta)
-  local main_lang = meta[metakey['lang'] or 'lang'] or 'en'
   local structured = {}
 
   local set_value = function (field, rawvalue, lang)
@@ -87,10 +103,34 @@ local function structure_metadata (meta)
   return structured
 end
 
+local function hierarchize (map)
+  local result = {}
+  for key, value in pairs(map) do
+    local hierarchies = split(key, '%.')
+    local current_map = result
+    local current_name = nil
+    for i, name in ipairs(hierarchies) do
+      if i < #hierarchies then
+        -- insert another hierarchy
+        current_map[name] = current_map[name] or {}
+        if type(current_map[name]) ~= 'table' then
+          error("Conflicting metadata info (hierarchy collision) for ", key)
+        end
+        current_name = name
+        current_map = current_map[name]
+      else
+        -- we reached the bottom, no further hierarchy
+        current_map[name] = value
+      end
+    end
+  end
+  return result
+end
+
 function Pandoc (doc)
   local is_table = function (b) return b.tag == 'Table' end
   local mdtable, tblidx = doc.blocks:find_if(is_table)
-  local newmeta = structure_metadata(table_to_map(mdtable))
+  local newmeta = hierarchize(structure_metadata(table_to_map(mdtable)))
   doc.blocks:remove(tblidx)
 
   return doc .. pandoc.Pandoc({}, newmeta)

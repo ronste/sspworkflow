@@ -16,3 +16,5 @@ runConversionChain xml-file=buffer.xml html-
 runConversionChain reset-bits-example
 runConversionChain bitsxml html-
 runConversionChain copy-work test
+runConversionChain reset-bits-example-yaml
+runConversionChain metadata-filter="yaml" xml-mode="bits" xml

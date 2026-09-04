@@ -30,14 +30,16 @@ pandoc- xml-mode=xml-mode metadata-filter=metadata-filter: _default
     --extract-media="." \
     --metadata-file="$METADATA_PATH/metadata.yaml" \
     --citeproc \
-    --template $UTILS_PATH/{{ if xml-mode == "bits" { "bits_template.tex" } else { "jats_template.tex" } }} \
+    --template $TEMPLATE_PATH/{{ if xml-mode == "bits" { "bits_template.tex" } else { "jats_template.tex" } }} \
     {{ if metadata-filter == "yaml" { "--lua-filter=$UTILS_PATH/metadata-yaml.lua" } else {""} }} \
     {{ if metadata-filter == "table" { "--lua-filter=$UTILS_PATH/metadata-table.lua" } else {""} }} \
     {{ if metadata-filter == "custom" { "-t $UTILS_PATH/custom_jats_writer.lua" } else { "-t jats" } }} \
     -o "$WORK_PATH/{{docx-file}}_Pandoc.xml" \
     --wrap preserve
   cp {{ if debug == "true" { "--verbose" } else { "" } }} "$WORK_PATH/{{docx-file}}_Pandoc.xml" "$WORK_PATH/{{buffer-xml-file}}"
-  cp {{ if debug == "true" { "--verbose" } else { "" } }} $RES_PATH/logo/* $WORK_PATH/media
+  if [ -d "$RES_PATH/logo" ]; then
+    cp {{ if debug == "true" { "--verbose" } else { "" } }} $RES_PATH/logo/* $WORK_PATH/media
+  fi
   echo "Elapsed Time: $SECONDS seconds"
 
 # Generate PDF using Pandoc
