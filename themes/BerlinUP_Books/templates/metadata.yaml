@@ -1,0 +1,109 @@
+---
+# https://pandoc.org/jats.html
+title:  "Dummy Titel"
+author:
+ - surname: AuthorA
+   given-names: A. Dummy 
+   orcid: http://orcid.org/0000-0543-1619-2505
+   email: authorA@dummy.de
+   affiliation:
+   - 1
+   cor-id: 1
+   corresp: true
+ - surname: AuthorB
+   given-names: B. Dummy
+   orcid: http://orcid.org/0000-0433-1419-2707
+   email: authorB@hdummy.de
+   affiliation:
+   - 2
+affiliation:
+  - id: 1
+    organization: Dummy affiliation A
+  - id: 2
+    organization: Dummy affiliation B
+keywords: [dummy keyword 1, dummy keyword 2]
+abstract: |
+  Dummy Abstract
+  With two paragraphs.
+link-citations: true
+tags: [dummy tag 1, dummy tag 2]
+article:
+  type: research-article
+  publisher-id: berlinup
+  doi: 10.1234/dummy.doi
+  heading: dummy article type
+  categories:
+  - Muster Katergorie A
+  - Muster Katergorie B
+  author-notes:
+    conflict: "Conflict of interest"
+    con: "dasdfasdf"
+    corresp:
+      - id: 1
+        email: corrsep@email.de
+  volume: 0
+  issue: 0
+journal:
+  publisher-id: berlinup
+  publisher-name: Berlin Universities Publishing
+  publisher-loc: Berlin, Germany
+  title: Zeitschrift für Testologie
+  eissn: 0000-1111
+  pissn: 1544-9173
+history:
+  - event: received
+    day: 1
+    month: Januar
+    year: 1900
+  - event: accepted
+    day: 2
+    month: Januar
+    year: 1900
+date:
+  day: 3
+  month: Januar
+  year: 1900
+copyright:
+  holder: Dummy Copyright Holder
+  year: 2022
+license:
+  text: "Dieses Werk steht unter einer Dummy-Lizenz"
+  type: open-access
+  link: http://creativecommons.org/licenses/by/4.0/
+citationSuggestion: 'Mustermann, M. and Musterfrau, M. (\<bold\>2022\<\/bold\>). Experimentelle Fallstudie: Erste Ergebnisse. \<italic\>Zeitschrift für Testologie 12(3)\<\/italic\>, S. 1-2. https://doi.org/10.1234/berlinup.v12i3.1'
+geometry: margin=2cm
+references:
+processStyles:
+  # this maps jats tags to docx format templates
+  title: Title
+  abstract: Abstract
+  keywords: Schlagwörter
+  subject: Rubrik
+  authorNames: "Autor*in Name"
+  affiliations: "Autor*in Affiliation"
+  corresp: "Corresponding Author"
+  table-turn-right: "Tabelle-gedreht-rechts"
+  table-turn-left: "Tabelle-gedreht-links"
+  table-caption: "Beschriftung Tabelle"
+  figure-caption: "Beschriftung Abbildung"
+  citationSuggestion: "Zitiervorschlag"
+  # bookPart: "Kapitel"
+ignoreStyles:
+# this defines docx format templates to ignore
+- Zeitschriften-Logo
+- ISSN
+- Zeitschriftentitel
+- Ausgabe
+- Autor*in E-Mail
+- Datum Einreichung
+- Datum Annahme
+- Datum Publikation
+- Lizenzinformationen
+- Zitiervorschlag
+- Bibliography
+tableLabel: "Tabelle"
+figureLabel: "Abbildung"
+keywordsLabel: "Schlagwörter"
+citationSuggestionLabel: "Zitiervorschlag"
+tocLabel: "Inhalt"
+...
