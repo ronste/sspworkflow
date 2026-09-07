@@ -1,6 +1,6 @@
 # Single Source Publishing Workflow Image
 
-- Version: 1.6 (04.03.2026)
+- Version: 1.7 (04.09.2026)
 - Developed by: Ronald Steffen
 
 ---
@@ -71,7 +71,7 @@ Template files and other sources (e.g. css) are dereived from:
 3) Optional (PowerShell): enable tab completion for `runConversionChain`, `runConversionChain.ps1`, and `rcc`:
 
     ```powershell
-    & "setup-completion.ps1" -ContainerName "sspworkflow"
+    & ".\setup-completion.ps1" -ContainerName "sspworkflow"
     ```
 
     This creates a user completion file and updates your PowerShell profile to load it automatically.
