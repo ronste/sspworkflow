@@ -73,37 +73,4 @@ license:
 citationSuggestion: 'Mustermann, M. and Musterfrau, M. (\<bold\>2022\<\/bold\>). Experimentelle Fallstudie: Erste Ergebnisse. \<italic\>Zeitschrift für Testologie 12(3)\<\/italic\>, S. 1-2. https://doi.org/10.1234/berlinup.v12i3.1'
 geometry: margin=2cm
 references:
-processStyles:
-  # this maps jats tags to docx format templates
-  title: Title
-  abstract: Abstract
-  keywords: Schlagwörter
-  subject: Rubrik
-  authorNames: "Autor*in Name"
-  affiliations: "Autor*in Affiliation"
-  corresp: "Corresponding Author"
-  table-turn-right: "Tabelle-gedreht-rechts"
-  table-turn-left: "Tabelle-gedreht-links"
-  table-caption: "Beschriftung Tabelle"
-  figure-caption: "Beschriftung Abbildung"
-  citationSuggestion: "Zitiervorschlag"
-  # bookPart: "Kapitel"
-ignoreStyles:
-# this defines docx format templates to ignore
-- Zeitschriften-Logo
-- ISSN
-- Zeitschriftentitel
-- Ausgabe
-- Autor*in E-Mail
-- Datum Einreichung
-- Datum Annahme
-- Datum Publikation
-- Lizenzinformationen
-- Zitiervorschlag
-- Bibliography
-tableLabel: "Tabelle"
-figureLabel: "Abbildung"
-keywordsLabel: "Schlagwörter"
-citationSuggestionLabel: "Zitiervorschlag"
-tocLabel: "Inhalt"
 ...
