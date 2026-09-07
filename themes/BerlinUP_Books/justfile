@@ -1,14 +1,11 @@
 dotenv-filename := '.env'
-import '../../justfile'
+#import '../../justfile'
 
 # Add theme specific custom conversion steps
-@custom-help:
+[group('BerlinUP Books')]
+@theme-help:
   echo "This is an example justfile (located in $(pwd)) which can be used to create theme specific custom conversion chains."
   echo "This justfile imports the main justfile. All recipes defined here will be available when this theme is selected."
-
-# An example customization step
-@custom-example: reset-example xml && html-
-  echo "{{wcs}}This is an example for a theme-specific customized step set between creating a XML file and an HTML file.{{nc}}"
 
 # Init script for BerlinUP books theme
 [no-cd, private]

@@ -1,5 +1,7 @@
 # run for all recipies
-_default:
+_default: _initialize _print-user-info
+
+_initialize:
   #!/usr/bin/env bash
   set -euo pipefail
   # set all dynamic environment variables (others will be set via .env file)
@@ -13,7 +15,21 @@ _default:
   echo 'export RES_PATH="$THEME_PATH/{{theme}}/res"'  >> ~/.bashrc
   # Apply the changes
   source ~/.bashrc
-  # print user info
+  # Load theme
+  if [ {{ if theme  == "default" {"true"} else {"false"} }} ]; then
+    if [ ! -f "$METADATA_PATH/metadata.yaml" ]; then
+      cp $TEMPLATE_PATH/metadata.yaml $METADATA_PATH/metadata.yaml
+    fi
+  else
+    echo "Loading theme {{theme}} from $THEME_PATH/{{theme}}"
+    cp $THEME_PATH/{{theme}}/templates/metadata.yaml $METADATA_PATH/metadata.yaml
+    just --justfile $THEME_PATH/{{theme}}/justfile
+  fi
+
+# print user info
+_print-user-info:
+  #!/usr/bin/env bash
+  set -euo pipefail
   echo "Working directory is: $WORK_PATH"
   echo "Theme path is:        $THEME_PATH/{{theme}}"
   echo "Utils path is:        $UTILS_PATH"
@@ -21,8 +37,4 @@ _default:
   if [ ! -d "$METADATA_PATH" ]; then
     mkdir -p $METADATA_PATH
   fi
-  if {{ if theme  == "default" {"true"} else {"false"} }} && [ ! -f "$METADATA_PATH/metadata.yaml" ]; then
-    cp $TEMPLATE_PATH/metadata.yaml $METADATA_PATH/metadata.yaml
-  else
-    cp $THEME_PATH/{{theme}}/templates/metadata.yaml $METADATA_PATH/metadata.yaml
-  fi
+

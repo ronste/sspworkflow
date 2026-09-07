@@ -17,7 +17,7 @@ weasyprint-: _default
   source ~/.bashrc
   echo -e "{{hcs}}Converting to PDF with WeasyPrint ...{{nc}}"
   cp {{ if debug == "true" { "--verbose" } else { "" } }} $CSS_PATH/weasyprint.css $WORK_PATH/media/weasyprint.css
-  weasyprint {{ if debug == "true" { "-d -v" } else { "" } }} \
+  weasyprint {{ if debug == "true" { "-d" } else { "" } }} \
     -m print -p \
     -s "$WORK_PATH/media/weasyprint.css" \
     {{ if develop == "true" { "-s $CSS_PATH/develop.css" } else { "" } }} \

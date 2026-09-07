@@ -1,10 +1,15 @@
 [private]
-help topic="help":
+help topic="help": _initialize
   #!/usr/bin/env bash
   set -euo pipefail
   case {{topic}} in
     'help')
-      just default-help
+        # if [ {{ if theme == "default" {"true"} else {"false"} }} ]; then
+        #   just theme={{theme}} default-help
+        # else
+        #   just theme={{theme}} default-help --justfile "$THEME_PATH/{{ theme }}/justfile"
+        # fi
+        just theme={{theme}} default-help
       ;;
 
     'pandoc')
@@ -38,7 +43,8 @@ help topic="help":
 
 
 [private]
-@default-help:
+default-help:
+  #!/usr/bin/env bash
   echo "Usage: [ runConversionChain | just ] [ theme=<theme> | debug=true | validate=true | develop=true  | pagedjs-polyfill=true ] [ docx-file | xml-file | html-file =<filename> ] [ <recipe> ]"
   echo ""
   echo 'To run a recipe without its dependencies add a "-" to the recipes name, e.g. "weasyprint-"'
@@ -53,4 +59,9 @@ help topic="help":
   echo "    docx-file | xml-file | html-file = <filename>: Specifies the path and name of the docx, xml or html source file to be converted."
   echo "    pagedjs-polyfill = true: Adds the Pagedjs polyfill to the final HTML output for debugging purpose."
   echo ""
+  # if {{ if theme == "default" {"true"} else {"false"} }}; then
+  #   just --list
+  # else
+  #   just --list --justfile "$THEME_PATH/{{ theme }}/justfile"
+  # fi
   just --list

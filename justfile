@@ -2,6 +2,7 @@
 all: _default pdf
 set dotenv-load := true
 set allow-duplicate-recipes := true
+set allow-duplicate-variables := true
 
 [private]
 alias Pandoc := pandoc
@@ -62,6 +63,8 @@ import 'justfiles/mathjax-justfile'
 import 'justfiles/weasyprint-justfile'
 import 'justfiles/docxtojats-justfile'
 import 'justfiles/xmllint-justfile'
+
+import 'themes/BerlinUP_Books/justfile'
 
 # Generate PDF using Pandoc, Pagedjs and Weasyprint
 [private]
@@ -129,6 +132,14 @@ reset-example xml-mode=xml-mode metadata-filter=metadata-filter: cleanup-work &&
 @copy-work destination:
   mkdir $COPY_PATH/{{destination}}
   cp -r $WORK_PATH/* $COPY_PATH/{{destination}}
+
+# List available themes
+[no-cd]
+list-themes:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo "Available themes:"
+  ls -1 $THEME_PATH
 
 # Show versions of all used tools
 [no-cd]
