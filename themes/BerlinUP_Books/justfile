@@ -1,5 +1,4 @@
 dotenv-filename := '.env'
-#import '../../justfile'
 
 # Add theme specific custom conversion steps
 [group('BerlinUP Books')]
@@ -14,9 +13,59 @@ _books_default:
   set -euo pipefail
   echo -e 'Using BerlinUP Books theme'
 
+# Copy the resulting BITS XML chapter to the templates folder (required to assemble the book)
+[no-cd, private]
+_move_chapter:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo -e 'Moving BITS XML chapter to templates folder'
+    cp {{ if debug == "true" { "--verbose" } else { "" } }} "$WORK_PATH/{{buffer-xml-file}}" "$WORK_PATH/templates/{{docx-file}}_bits.xml"
+
+# Process footnotes (make IDs unique accross the assembled book)
+[no-cd, private]
+_post_processing:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo -e "Processing book-part IDs ..."
+  just docx-file={{docx-file}} xsl-file=../themes/BerlinUP_Books/utils/book-part-ids.xsl xml- "final"
+  echo -e "Processing footnotes ..."
+  just docx-file={{docx-file}} xsl-file=../themes/BerlinUP_Books/utils/footnotes.xsl xml- "final"
+
 # Convert book chapter
 [group('BerlinUP Books')]
-convertBookChapter: _books_default (pandoc- "bits" "table") (xml- "bits")
+[no-cd]
+convertBookChapter: _books_default (pandoc- "bits" "table") _move_chapter
   #!/usr/bin/env bash
   set -euo pipefail
   echo -e 'Chapter conversion finished'
+
+# Assemble book
+[group('BerlinUP Books')]
+[no-cd]
+assembleBook: _books_default && (pandoc- "bits" "table") (xml- "bits") _post_processing
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo -e 'Getting it printed ....'
+  # read templates/metadata.yaml file containing the book parts
+  if [ ! -f "templates/metadata.yaml" ]; then
+    echo "Error: templates/metadata.yaml file not found. Please make sure you are in the correct directory and the file exists."
+    exit
+  fi
+  pandoc -f markdown --metadata-file=templates/metadata.yaml --template=../themes/BerlinUP_Books/templates/generate_partial.tex -o ../themes/BerlinUP_Books/templates/book_partials.tex ../themes/BerlinUP_Books/templates/partials.md
+
+# Reset work folder (will not delete docx files)
+[group('BerlinUP Books')]
+[no-cd]
+reset-work:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  rm *.xml 2>/dev/null || true
+  mkdir -p media
+  if [ ! -f "templates/metadata.yaml" ]; then
+    mkdir -p templates
+    cp ../themes/BerlinUP_Books/templates/contents-metadata.yaml templates/contents-metadata.yaml
+  fi
+  if [ ! -f "metadata/metadata.yaml" ]; then
+    mkdir -p metadata
+    cp ../themes/BerlinUP_Books/templates/metadata.yaml metadata/metadata.yaml
+  fi

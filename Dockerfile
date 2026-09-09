@@ -17,7 +17,8 @@ ENV SYS_PACKAGES \
 	curl \
     unzip \
     sudo \
-    bash-completion
+    bash-completion \
+    yq
 
 # development packages
 ENV DEV_PACKAGES \

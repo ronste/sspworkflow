@@ -29,6 +29,8 @@ pandoc- xml-mode=xml-mode metadata-filter=metadata-filter: _default
     -f docx+styles+citations \
     --extract-media="." \
     --metadata-file="$METADATA_PATH/metadata.yaml" \
+    --metadata-file="$WORK_PATH/templates/contents-metadata.yaml" \
+    --data-dir="$WORK_PATH" \
     --citeproc \
     --template $TEMPLATE_PATH/{{ if xml-mode == "bits" { "bits_template.tex" } else { "jats_template.tex" } }} \
     {{ if metadata-filter == "yaml" { "--lua-filter=$UTILS_PATH/metadata-yaml.lua" } else {""} }} \

@@ -26,41 +26,45 @@
     <!-- handle front-matter -->
     <xsl:template match="//front-matter">
         <xsl:message>Processing front-matter ...</xsl:message>
-        <xsl:copy>
-            <!-- <xsl:apply-templates select="//sec[some $toc in $toc-id-candidates satisfies @id = $toc]" /> -->
+        <front-matter>
             <xsl:apply-templates select="node()" />
-        </xsl:copy>
+        </front-matter>
     </xsl:template>
 
     <xsl:template match="//book-body">
         <xsl:message>Processing body ...</xsl:message>
         <book-body>
-            <xsl:apply-templates select="sec[not(some $toc in $toc-id-candidates satisfies @id = $toc)]" />
+            <xsl:apply-templates select="@*|node()" />
         </book-body>
     </xsl:template>
 
+    <!-- remove wrapper paragraphs -->
+    <xsl:template match="//p[@specific-use='wrapper']">
+            <xsl:apply-templates select="node()" />
+    </xsl:template>
+
     <!-- create chapters -->
-    <xsl:template match="//book-body/sec[not(some $toc in $toc-id-candidates satisfies @id = $toc)]">
+    <!-- <xsl:template match="//book-body/sec[not(some $toc in $toc-id-candidates satisfies @id = $toc)]">
         <xsl:variable name="chapter_id" select="position()" />
         <xsl:message>
             <xsl:value-of select="concat('Chapter ', $chapter_id, ': ', @id)" />
         </xsl:message>
         <book-part id="chapter{$chapter_id}" book-part-type="chapter">
-            <!-- <book-part-meta></book-part-meta> -->
+            <book-part-meta></book-part-meta>
             <body>
                 <sec>
                     <xsl:apply-templates select="node()" />
                 </sec>
             </body>
-            <!-- <back></back> -->
+            <back></back>
         </book-part>
-    </xsl:template>
+    </xsl:template> -->
 
-    <!-- remove everything outside a chapter -->
-    <xsl:template match="//book-body/*[not(self::sec)]"></xsl:template>
+    <!-- remove everything outside a chapter
+    <xsl:template match="//book-body/*[not(self::sec)]"></xsl:template> -->
 
     <!-- handle table of contents -->
-    <xsl:template match="//sec[some $toc in $toc-id-candidates satisfies @id = $toc]">
+    <!-- <xsl:template match="//sec[some $toc in $toc-id-candidates satisfies @id = $toc]">
         <xsl:message>Processing TOC</xsl:message>
         <toc>
             <toc-title-group>
@@ -76,10 +80,10 @@
         <toc-entry>
             <xsl:apply-templates select="node()" />
         </toc-entry>
-    </xsl:template>
+    </xsl:template> -->
 
         <!-- handle references to other chapters -->
-        <xsl:template match="xref[not(@ref-type)]">
+        <!-- <xsl:template match="xref[not(@ref-type)]">
             <xsl:variable name="chapter_target" select="//*[@id=current()/@rid][1]" />
             <xsl:variable name="chapter_position" as="xs:integer?"
                 select="if ($chapter_target/self::sec and $chapter_target/parent::book-body)
@@ -99,6 +103,6 @@
                 </xsl:attribute>
                 <xsl:apply-templates select="node()" />
             </xref>
-        </xsl:template>
+        </xsl:template> -->
 
     </xsl:stylesheet>

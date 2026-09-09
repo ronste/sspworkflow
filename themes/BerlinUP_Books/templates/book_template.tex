@@ -1,29 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE book PUBLIC "-//NLM//DTD BITS Book Interchange DTD v2.2 20250930//EN" "http://jats.nlm.nih.gov/extensions/bits/2.2/BITS-book2-2.dtd">
 <book
-dtd-version="2.2" xml:lang="en" 
-xmlns:mml="http://www.w3.org/1998/Math/MathML" 
-xmlns:xlink="http://www.w3.org/1999/xlink" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    dtd-version="2.2" xml:lang="en" 
+    xmlns:mml="http://www.w3.org/1998/Math/MathML" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-<book-meta></book-meta>
-<front-matter>
-$if(booktitle)$
-<book-title-group>
-    <book-title>$booktitle$</book-title>
-</book-title-group>
-$endif$
-<notes>This is a dummy note as front matter is not fully implemented yet.</notes>
-</front-matter>
+    <book-meta>
+        $if(title)$
+            <book-title-group>
+                <book-title>$title$</book-title>
+                <subtitle>$subtitle$</subtitle>
+            </book-title-group>
+        $endif$
+        <notes><p>This is a dummy note as front matter is not fully implemented yet.</p></notes>
+    </book-meta>
+    <front-matter>
+        <preface>
+            <book-part-meta>
+                <title-group>
+                    <title>Preface</title>
+                </title-group>
+            </book-part-meta>
+            <named-book-part-body>
+                <p>$preface$</p>
+            </named-book-part-body>
+        </preface>
+        <front-matter-part>
+            <book-part-meta>
+            </book-part-meta>
+        </front-matter-part>
+    </front-matter>
 
-<book-body>
-$body$
-</book-body>
+    <book-body>
+        ${ book_partials.tex() }
+    </book-body>
 
-<book-back>
-$if(back)$
-$back$
-$endif$
-</book-back>
-
+    <book-back>
+        <ack id="bid.394">
+        <title>Acknowledgments</title>
+        <p>We gratefully acknowledge the work of Vladimir Soussov,
+            as well as the entire NCBI Entrez team, especially Grisha
+            Starchenko, Vladimir Sirotinin, Alexey Iskhakov, Anton
+            Golikov, and Pramod Paranthaman. We thank Jim Ostell for
+            guidance, ...</p>
+        </ack>
+        $if(back)$
+            $back$
+        $endif$
+    </book-back>
 </book>
