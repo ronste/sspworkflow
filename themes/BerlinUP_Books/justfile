@@ -8,10 +8,18 @@ dotenv-filename := '.env'
 
 # Init script for BerlinUP books theme
 [no-cd, private]
-_books_default:
+_books_default: _default
   #!/usr/bin/env bash
   set -euo pipefail
   echo -e 'Using BerlinUP Books theme'
+
+# Clear the book_partials.tex file (used to assemble the book)
+[no-cd, private]
+_clear_partials:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo -e "$WORK_PATH/templates/book_partials.tex will be cleared"
+  : > "$WORK_PATH/templates/book_partials.tex"
 
 # Copy the resulting BITS XML chapter to the templates folder (required to assemble the book)
 [no-cd, private]
@@ -26,6 +34,8 @@ _move_chapter:
 _post_processing:
   #!/usr/bin/env bash
   set -euo pipefail
+  echo -e "Restucturing book-part elements ..."
+  just  docx-file={{docx-file}} xsl-file=../themes/BerlinUP_Books/utils/book-part-structure.xsl xml- "final"
   echo -e "Processing book-part IDs ..."
   just docx-file={{docx-file}} xsl-file=../themes/BerlinUP_Books/utils/book-part-ids.xsl xml- "final"
   echo -e "Processing footnotes ..."
@@ -34,7 +44,7 @@ _post_processing:
 # Convert book chapter
 [group('BerlinUP Books')]
 [no-cd]
-convertBookChapter: _books_default (pandoc- "bits" "table") _move_chapter
+convertBookChapter: _books_default _clear_partials (pandoc- "bits" "table") _move_chapter
   #!/usr/bin/env bash
   set -euo pipefail
   echo -e 'Chapter conversion finished'
@@ -47,11 +57,13 @@ assembleBook: _books_default && (pandoc- "bits" "table") (xml- "bits") _post_pro
   set -euo pipefail
   echo -e 'Getting it printed ....'
   # read templates/metadata.yaml file containing the book parts
-  if [ ! -f "templates/metadata.yaml" ]; then
-    echo "Error: templates/metadata.yaml file not found. Please make sure you are in the correct directory and the file exists."
+  if [ ! -f "templates/contents-metadata.yaml" ]; then
+    echo "Error: templates/contents-metadata.yaml file not found. Please make sure you are in the correct directory and the file exists."
     exit
   fi
-  pandoc -f markdown --metadata-file=templates/metadata.yaml --template=../themes/BerlinUP_Books/templates/generate_partial.tex -o ../themes/BerlinUP_Books/templates/book_partials.tex ../themes/BerlinUP_Books/templates/partials.md
+  sed -E 's/"([^"]+)"/"`\1`{=latex}"/g' $WORK_PATH/templates/contents-metadata.yaml > $WORK_PATH/templates/pandoc-contents-metadata.yaml
+  pandoc -f markdown --metadata-file=templates/pandoc-contents-metadata.yaml --template=../themes/BerlinUP_Books/templates/generate_partial.tex -o $WORK_PATH/templates/book_partials.tex ../themes/BerlinUP_Books/templates/partials.md
+
 
 # Reset work folder (will not delete docx files)
 [group('BerlinUP Books')]
@@ -69,3 +81,15 @@ reset-work:
     mkdir -p metadata
     cp ../themes/BerlinUP_Books/templates/metadata.yaml metadata/metadata.yaml
   fi
+
+# Convert all chapters listed in template/contents-metadata.yaml
+[group('BerlinUP Books')]
+[no-cd]
+convertAllChapters:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  while IFS= read -r line; do
+    echo "Converting chapter: $line"
+    just theme=BerlinUP_Books docx-file="$line" convertBookChapter
+  done < <(yq -r '.content[]' "$WORK_PATH/templates/contents-metadata.yaml")
+  

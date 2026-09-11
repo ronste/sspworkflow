@@ -1,1 +1,1 @@
-# book parts
+# book partials dummy template, empty by default

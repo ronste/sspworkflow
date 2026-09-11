@@ -1,12 +1,12 @@
-# list of fie names without extensions
+# list of file names without extensions
 # all files should be BITS XML
 content:
-  - "`EditionAVL_Band03_BeitragMix.docx`{=latex}"
-  - prefacePart1
-  - chapter1
-  - chapter2
-  - chapter3
-  - prefacePart2
-  - chapter4
-  - chapter5
-  - chapter6
+  - "EditionAVL_Band03_BeitragMix.docx"
+  - "EditionAVL_Band03_Preface1.docx"
+  - "EditionAVL_Band03_BeitragMix.docx"
+  - "EditionAVL_Band03_BeitragMix.docx"
+  - "EditionAVL_Band03_BeitragMix.docx"
+  - "EditionAVL_Band03_Preface2.docx"
+  - "EditionAVL_Band03_BeitragMix.docx"
+  - "EditionAVL_Band03_BeitragMix.docx"
+  - "EditionAVL_Band03_BeitragMix.docx"
