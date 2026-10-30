@@ -27,16 +27,15 @@ pandoc- xml-mode=xml-mode metadata-filter=metadata-filter: _default
   echo -e "Using metadata filter {{ metadata-filter }}"
   pandoc {{ if debug == "true" { "--verbose" } else { "" } }} "$WORK_PATH/{{docx-file}}" -s \
     -f docx+styles+citations \
-    --extract-media="." \
     --metadata-file="$METADATA_PATH/metadata.yaml" \
     --metadata-file="$WORK_PATH/templates/contents-metadata.yaml" \
+    --defaults="$UTILS_PATH/pandoc_defaults.yaml" \
     --data-dir="$WORK_PATH" \
-    --citeproc \
     --template $TEMPLATE_PATH/{{ if xml-mode == "bits" { "bits_template.tex" } else { "jats_template.tex" } }} \
     {{ if metadata-filter == "yaml" { "--lua-filter=$UTILS_PATH/metadata-yaml.lua" } else {""} }} \
     {{ if metadata-filter == "table" { "--lua-filter=$UTILS_PATH/metadata-table.lua" } else {""} }} \
     {{ if metadata-filter == "custom" { "-t $UTILS_PATH/custom_jats_writer.lua" } else { "-t jats" } }} \
-    -o "$WORK_PATH/{{docx-file}}_Pandoc.xml" \
+    -o "$WORK_PATH/{{docx-file}}_Pandoc.xml"
     --wrap preserve
   cp {{ if debug == "true" { "--verbose" } else { "" } }} "$WORK_PATH/{{docx-file}}_Pandoc.xml" "$WORK_PATH/{{buffer-xml-file}}"
   if [ -d "$RES_PATH/logo" ]; then
