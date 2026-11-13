@@ -1,4 +1,4 @@
-FROM debian:stable-slim
+FROM docker.io/pandoc/core:latest-debian
 
 LABEL maintainer="Ronald Steffen, FU Berlin <r.steffen@fu-berlin.de>"
 
@@ -61,28 +61,22 @@ ENV TOOLS_PACKAGES_2 \
 
 # install packages; packages are installed in separate runs due to frequent timeout errors with the Debian server 
 RUN set -xe && apt-get update  \
-    && cd home \
 	&& apt-get install -y $SYS_PACKAGES
 RUN set -xe && apt-get update  \
-    && cd home \
 	&& apt-get install -y $DEV_PACKAGES
 RUN set -xe && apt-get update  \
-    && cd home \
 	&& apt-get install -y $DEV_PACKAGES_2
 RUN set -xe && apt-get update  \
-    && cd home \
 	&& apt-get install -y $TOOLS_PACKAGES
 RUN set -xe && apt-get update  \
-    && cd home \
 	&& apt-get install -y $TOOLS_PACKAGES_2
     # && pipx install panflute \
     # && pipx ensurepath
 RUN set -xe && apt-get update  \
-    && cd home \
 	&& apt-get install -y $DEV_PACKAGES_3
 
 # install required tools not available through the Debian repository
-RUN set -xe && cd root \
+RUN set -xe && cd /root \
     && git clone https://github.com/ronste/sspworkflow.git \
     # && mkdir sspworkflow \
     && mkdir sspworkflow/lib \
@@ -99,10 +93,10 @@ RUN set -xe && cd root \
     ## docx2jats
     && git clone https://github.com/Vitaliy-1/docxToJats.git \
     # Pandoc
-    && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
-    && wget https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz \
-    && tar xvzf pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz --strip-components 1 -C /usr/local/ \
-    && rm pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz \
+    # && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
+    # && wget https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz \
+    # && tar xvzf pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz --strip-components 1 -C /usr/local/ \
+    # && rm pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz \
     # Saxon-HE
     && wget https://github.com/Saxonica/Saxon-HE/releases/download/Saxon${SAXON_VERSION}/Saxon${SAXON_VERSION}J.zip \
     && unzip -d Saxon${SAXON_VERSION}J Saxon${SAXON_VERSION}J.zip \
@@ -129,13 +123,24 @@ RUN set -xe && cd root \
     && luarocks install xml2lua \
     && eval "$(luarocks path)" \
     && cd .. \
-    && rm luarocks-${LUAROCKS_VERSION}.tar.gz \
+    && rm luarocks-${LUAROCKS_VERSION}.tar.gz
+
+RUN set -xe && cd /root \
+    # import pandoc lua filters
+    && curl --proto '=https' --tlsv1.3 -sSfL -o /tmp/verstat.tar.xz \
+        "https://codeberg.org/pandoc/verstat/archive/main.tar.gz" \
+    && tar -xf /tmp/verstat.tar.xz -C /tmp \
+    && mv /tmp/verstat/verstat.lua /usr/local/bin/verstat \
+    && verstat update /tmp/verstat/packages.json \
+    && verstat add normalize-metadata metadata-table template-friendly-metadata \
     # Setup runConversionChain command
     && echo '#!/usr/bin/env bash' > /bin/runConversionChain \
     && echo "cd /root/sspworkflow/work" >> /bin/runConversionChain \
     && echo 'just "$@"' >> /bin/runConversionChain \
     && chmod u+x /bin/runConversionChain \
-    && echo "alias rcc='runConversionChain'" >> /etc/bash.bashrc \
+    && echo "alias rcc='runConversionChain'" >> /etc/bash.bashrc
+
+RUN set -xe && cd /root \
     && runConversionChain reset-example
 
 WORKDIR /root/sspworkflow
