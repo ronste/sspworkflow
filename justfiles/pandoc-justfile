@@ -25,17 +25,22 @@ pandoc- xml-mode=xml-mode metadata-filter=metadata-filter: _default
   echo -e "{{hcs}}Converting docx to XML with Pandoc ...{{nc}}"
   echo -e 'Using template file {{ if xml-mode == "bits" { "bits_template.tex" } else { "jats_template.tex" } }}'
   echo -e "Using metadata filter {{ metadata-filter }}"
+  
+  metadata_file_args=()
+  if [ -f "$WORK_PATH/templates/contents-metadata.yaml" ]; then
+    metadata_file_args+=(--metadata-file="$WORK_PATH/templates/contents-metadata.yaml")
+  fi
+  {{ if debug == "true" { "printenv|grep PANDOC"} else {""} }}
   pandoc {{ if debug == "true" { "--verbose" } else { "" } }} "$WORK_PATH/{{docx-file}}" -s \
     -f docx+styles+citations \
     --metadata-file="$METADATA_PATH/metadata.yaml" \
-    --metadata-file="$WORK_PATH/templates/contents-metadata.yaml" \
+    "${metadata_file_args[@]}" \
     --defaults="$UTILS_PATH/pandoc_defaults.yaml" \
-    --data-dir="$WORK_PATH" \
-    --template $TEMPLATE_PATH/{{ if xml-mode == "bits" { "bits_template.tex" } else { "jats_template.tex" } }} \
+    --template "$TEMPLATE_PATH/{{ if xml-mode == "bits" { "bits_template.tex" } else { "jats_template.tex" } }}" \
     {{ if metadata-filter == "yaml" { "--lua-filter=$UTILS_PATH/metadata-yaml.lua" } else {""} }} \
-    {{ if metadata-filter == "table" { "--lua-filter=$UTILS_PATH/metadata-table.lua" } else {""} }} \
+    {{ if metadata-filter == "table" { "--lua-filter=metadata-table.lua" } else {""} }} \
     {{ if metadata-filter == "custom" { "-t $UTILS_PATH/custom_jats_writer.lua" } else { "-t jats" } }} \
-    -o "$WORK_PATH/{{docx-file}}_Pandoc.xml"
+    -o "$WORK_PATH/{{docx-file}}_Pandoc.xml" \
     --wrap preserve
   cp {{ if debug == "true" { "--verbose" } else { "" } }} "$WORK_PATH/{{docx-file}}_Pandoc.xml" "$WORK_PATH/{{buffer-xml-file}}"
   if [ -d "$RES_PATH/logo" ]; then
