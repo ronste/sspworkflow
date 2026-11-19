@@ -53,16 +53,16 @@ hcs := '\033[0;32m' # heading color start
 nc := '\033[0m'    # no color
 wcs := '\033[0;31m' # warning color start
 
-import 'justfiles/default-justfile'
-import 'justfiles/help-justfile'
-import 'justfiles/pandoc-justfile'
-import 'justfiles/xml-justfile'
-import 'justfiles/html-justfile'
-import 'justfiles/pagedjs-justfile'
-import 'justfiles/mathjax-justfile'
-import 'justfiles/weasyprint-justfile'
-import 'justfiles/docxtojats-justfile'
-import 'justfiles/xmllint-justfile'
+import 'justfiles/default.justfile'
+import 'justfiles/help.justfile'
+import 'justfiles/pandoc.justfile'
+import 'justfiles/xml.justfile'
+import 'justfiles/html.justfile'
+import 'justfiles/pagedjs.justfile'
+import 'justfiles/mathjax.justfile'
+import 'justfiles/weasyprint.justfile'
+import 'justfiles/docxtojats.justfile'
+import 'justfiles/xmllint.justfile'
 
 import 'themes/BerlinUP_Books/justfile'
 
