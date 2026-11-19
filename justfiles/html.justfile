@@ -46,7 +46,7 @@ html-: _default
   # validate html
   set +e
   if [ "{{ validate }}" = "true" ]; then \
-    echo -e "{{hcs}}Validating XML with html-validate ...{{nc}}"; \
+    echo -e "{{hcs}}Validating HTML with html-validate ...{{nc}}"; \
     # xmllint "$WORK_PATH/{{docx-file}}_SaxonHE.html" --noout --valid --html; \
     # https://html-validate.org/usage/cli.html
     html-validate "$WORK_PATH/{{docx-file}}_SaxonHE.html"

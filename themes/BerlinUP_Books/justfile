@@ -18,8 +18,10 @@ _books_default: _default
 _clear_partials:
   #!/usr/bin/env bash
   set -euo pipefail
-  echo -e "$WORK_PATH/templates/book_partials.tex will be cleared"
-  : > "$WORK_PATH/templates/book_partials.tex"
+  if [ -f "$WORK_PATH/templates/book_partials.tex" ]; then
+    echo -e "$WORK_PATH/templates/book_partials.tex will be cleared"
+    : > "$WORK_PATH/templates/book_partials.tex"
+  fi
 
 # Copy the resulting BITS XML chapter to the templates folder (required to assemble the book)
 [no-cd, private]

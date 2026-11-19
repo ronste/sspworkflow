@@ -6,7 +6,7 @@ runConversionChain
 runConversionChain validate=true html-
 runConversionChain debug=true validate=true develop=true weasyprint-
 runConversionChain pandoc-pdf-xml-
-# runConversionChain theme=berlinup validate=true reset-example html
+runConversionChain theme=berlinup validate=true reset-example html
 runConversionChain -f /root/sspworkflow/themes/berlinup/justfile debug=true custom-example
 runConversionChain docxtojats
 runConversionChain xml-file='/root/sspworkflow/work/buffer.xml' xml-validate
@@ -15,9 +15,10 @@ runConversionChain
 runConversionChain xml-file=buffer.xml html-
 runConversionChain reset-bits-example
 runConversionChain bitsxml html-
+rm -rf /root/sspworkflow/store/test
 runConversionChain copy-work test
-runConversionChain reset-bits-example-yaml
-runConversionChain metadata-filter="yaml" xml-mode="bits" xml
+runConversionChain reset-bits-example-table
+runConversionChain metadata-filter="table" xml-mode="bits" xml
 runConversionChain theme=BerlinUP_Books help
 runConversionChain theme=BerlinUP_Books metadata-filter="table" xml-mode="bits" xml
 runConversionChain theme=BerlinUP_Books convertBookChapter
