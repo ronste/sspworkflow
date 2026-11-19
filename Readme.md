@@ -58,15 +58,17 @@ Template files and other sources (e.g. css) are dereived from:
 2) Start the sspworkflow conatiner with:
 
     Linux/macOS (bash):
+
     ```bash
-   . sspworkflow-run-prod.sh <your-container-name>` to start a container
+   . sspworkflow-run-prod.sh <your-container-name>
     ```
-    
+
     Windows (PowerShell):
+
     ```powershell
-   & "sspworkflow-run-prod.ps1" -ContainerImage "sspworkflow:latest"`
+   "sspworkflow-run-prod.ps1" -ContainerImage "sspworkflow:latest"
    ```
-     
+
     Note: If no container name is provided `sspworkflow` will be used.
 
 3) Optional (PowerShell): enable tab completion for `runConversionChain`, `runConversionChain.ps1`, and `rcc`:
