@@ -2,7 +2,7 @@ FROM docker.io/pandoc/core:latest-debian
 
 LABEL maintainer="Ronald Steffen, FU Berlin <r.steffen@fu-berlin.de>"
 
-ENV PANDOC_VERSION=3.11
+ENV PANDOC_VERSION=3.14
 ENV SAXON_VERSION=HE12-10
 ENV LUA_VERSION=5.4
 ENV LUAROCKS_VERSION=3.13.0
@@ -34,6 +34,7 @@ ENV DEV_PACKAGES_2 \
     # for weasyprint
     python3 \
     pip \
+    libharfbuzz-subset0 \
     # for Saxon-HE
     default-jre
 
@@ -77,6 +78,8 @@ RUN set -xe && apt-get update  \
 
 # install required tools not available through the Debian repository
 RUN set -xe && cd /root \
+    # install nvm
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash \
     && git clone https://github.com/ronste/sspworkflow.git \
     # && mkdir sspworkflow \
     && mkdir sspworkflow/lib \
@@ -92,30 +95,40 @@ RUN set -xe && cd /root \
     && pip install docx weasyprint \
     ## docx2jats
     && git clone https://github.com/Vitaliy-1/docxToJats.git \
-    # Pandoc
-    # && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
-    # && wget https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz \
-    # && tar xvzf pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz --strip-components 1 -C /usr/local/ \
-    # && rm pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz \
+    # Install specific Pandoc version
+    && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
+    && wget https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz \
+    && tar xvzf pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz --strip-components 1 -C /usr/local/ \
+    && rm pandoc-${PANDOC_VERSION}-linux-${arch}.tar.gz \
     # Saxon-HE
     && wget https://github.com/Saxonica/Saxon-HE/releases/download/Saxon${SAXON_VERSION}/Saxon${SAXON_VERSION}J.zip \
     && unzip -d Saxon${SAXON_VERSION}J Saxon${SAXON_VERSION}J.zip \
-    && rm Saxon${SAXON_VERSION}J.zip \
+    && rm Saxon${SAXON_VERSION}J.zip
+
+RUN set -xe && cd /root \
+    # install node.js
+    && . ~/.bashrc \
+    && nvm install 22.14.0 \
+    && nvm use 22.14.0 \
     # Setup npm and install global packages
     && node -v \
-    && npm install -g npm@10.8.1 \
+    && npm install -g npm@10.9.2 \
     && npm install -g \
        html-validate@9.2.0 \
        just-install \
+       @vivliostyle/cli \
         #    puppeteer \ # used by pagedjs
         #    pagedjs-cli@latest # still outdated -> find alternative
     # just Bash completion
     && mkdir -p /etc/bash_completion.d \
-    && just --completions bash > /etc/bash_completion.d/just \
+    && just --completions bash > /etc/bash_completion.d/just
+
+RUN set -xe && cd /root/sspworkflow \
     # Setup npm and install local packages from package.json
     && npm ci --omit=dev --omit=optional \
     # for pandoc custom writer
     # Install luarocks and dependencies
+    && cd lib \
     && wget https://luarocks.org/releases/luarocks-${LUAROCKS_VERSION}.tar.gz \
     && tar zxpf luarocks-${LUAROCKS_VERSION}.tar.gz \
     && cd luarocks-${LUAROCKS_VERSION} \
@@ -132,7 +145,7 @@ RUN set -xe && cd /root \
     && tar -xf /tmp/verstat.tar.xz -C /tmp \
     && mv /tmp/verstat/verstat.lua /usr/local/bin/verstat \
     && verstat update /tmp/verstat/packages.json \
-    && verstat add normalize-metadata metadata-table template-friendly-metadata \
+    && verstat -v add normalize-metadata metadata-table template-friendly-metadata \
     # Setup runConversionChain command
     && echo '#!/usr/bin/env bash' > /bin/runConversionChain \
     && echo "cd /root/sspworkflow/work" >> /bin/runConversionChain \
@@ -141,6 +154,7 @@ RUN set -xe && cd /root \
     && echo "alias rcc='runConversionChain'" >> /etc/bash.bashrc
 
 RUN set -xe && cd /root \
+    && . ~/.bashrc \
     && runConversionChain reset-example
 
 WORKDIR /root/sspworkflow
