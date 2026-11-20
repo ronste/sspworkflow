@@ -6,14 +6,113 @@
     xmlns:xlink="http://www.w3.org/1999/xlink" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+    $if(titleseries)$
+    <collection-meta>
+        <title-group>
+            <title>$titleseries$</title>
+        </title-group>
+    </collection-meta>
+    $endif$
     <book-meta>
-        $if(title)$
-            <book-title-group>
-                <book-title>$title$</book-title>
-                <subtitle>$subtitle$</subtitle>
-            </book-title-group>
+        $if(doi)$
+        <book-id book-id-type="doi">$doi$</book-id>
         $endif$
-        <notes><p>This is a dummy note as front matter is not fully implemented yet.</p></notes>
+
+        $if(title)$
+        <book-title-group>
+            <book-title>$title$</book-title>
+            <subtitle>$subtitle$</subtitle>
+        </book-title-group>
+        $endif$
+        $if(publisher)$
+        <publisher>
+        $for(publisher)$
+            <publisher-name>$it.publisher-name$</publisher-name>
+            $for(it.publisher-loc)$
+            <publisher-loc>
+                $for(it.addr-line)$
+                <addr-line>$it$</addr-line>
+                $endfor$
+                <city>$it.city$</city>
+                <country>$it.country$</country>
+                $--  $<institution> Institution Name
+                <phone>$it.phone$</phone>
+                <postal-code>$it.postal-code$</postal-code>
+                <email>$it.email$</email>$-- $ if not with <ext-link>
+                <uri>$it.uri$</uri>
+            </publisher-loc>
+            $endfor$
+        $endfor$
+        </publisher>
+        $endif$
+
+        $if(edition)$
+        <edition>$edition$</edition>
+        $endif$
+
+        $if(abstract)$
+        <abstract>
+        $DE.abstract$
+        </abstract>
+        $endif$
+
+        $if(DE.keywords)$
+        <kwd-group xml:lang="de">
+            $for(keywords)$
+            <kwd>$it$</kwd>
+            $endfor$
+        </kwd-group>
+        $endif$
+        $if(EN.keywords)$
+        <kwd-group xml:lang="en">
+            $for(keywords)$
+            <kwd>$it$</kwd>
+            $endfor$
+        </kwd-group>
+        $endif$
+            
+
+        $if(custom-meta)$
+        <custom-meta-group>
+            $for(custom-meta)$
+            $for(it/pairs)$
+                <custom-meta>
+                    <meta-name>$it.key$</meta-name>
+                    <meta-value>$it.value$</meta-value>
+                </custom-meta>
+            $endfor$
+            $endfor$
+        </custom-meta-group>
+        $endif$
+
+        $if(language)$
+        <content-language>$language$</content-language>
+        $endif$
+
+        $if(volumeseries)$
+        <book-volume-number>$volumeseries$</book-volume-number>
+        $endif$
+
+        $if(issnonline)$
+        <issn publication-format="ebook">$issnonline$</issn>
+        $endif$
+        $if(issnprint)$
+        <issn publication-format="print">$issnprint$</issn>
+        $endif$
+        $if(issn-l)$$-- $TODO: problem with hyphen in variable name?
+        <issn-l>$issn-l$</issn-l>
+        $endif$
+        $if(isbnonline)$
+        <isbn publication-format="ebook">$isbnonline$</isbn>
+        $endif$
+        $if(isbnprint)$
+        <isbn publication-format="print">$isbnprint$</isbn>
+        $endif$
+
+        $if(descriptionseries)$
+        <NOCH-UNKLAR>$descriptionseries$</NOCH-UNKLAR>
+        $endif$
+
     </book-meta>
     <front-matter>
         <preface>

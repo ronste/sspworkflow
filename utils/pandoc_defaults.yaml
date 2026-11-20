@@ -2,3 +2,6 @@ extract-media: "."
 wrap: "preserve"
 filters:
   - citeproc
+  - metadata-table.lua
+  - normalize-metadata.lua
+  - template-friendly-metadata.lua
