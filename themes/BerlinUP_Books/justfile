@@ -21,6 +21,12 @@ _clear_partials:
   if [ -f "$WORK_PATH/templates/book_partials.tex" ]; then
     echo -e "$WORK_PATH/templates/book_partials.tex will be cleared"
     : > "$WORK_PATH/templates/book_partials.tex"
+  else
+    # Create an empty dummy book_partials.tex file if it does not exist (otherwise chapter conversions will fail)
+    if [ ! -d "$WORK_PATH/templates" ]; then
+      mkdir -p "$WORK_PATH/templates"
+    fi
+    touch "$WORK_PATH/templates/book_partials.tex"
   fi
 
 # Copy the resulting BITS XML chapter to the templates folder (required to assemble the book)
@@ -64,6 +70,7 @@ assembleBook: _books_default && (pandoc- "bits" "table") (xml- "bits") _post_pro
     exit
   fi
   sed -E 's/"([^"]+)"/"`\1`{=latex}"/g' $WORK_PATH/templates/contents-metadata.yaml > $WORK_PATH/templates/pandoc-contents-metadata.yaml
+  # Generate book_partials.tex file from the contents-metadata.yaml file
   pandoc -f markdown --metadata-file=templates/pandoc-contents-metadata.yaml --template=../themes/BerlinUP_Books/templates/generate_partial.tex -o $WORK_PATH/templates/book_partials.tex ../themes/BerlinUP_Books/templates/partials.md
 
 
